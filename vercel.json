@@ -9,5 +9,8 @@
             "src": "/(.*)",
             "dest": "helixpress_backend/wsgi.py"
         }
+    ],
+    "post-build": [
+        "python manage.py collectstatic --noinput"
     ]
 }
