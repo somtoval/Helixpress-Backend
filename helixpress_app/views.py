@@ -6,6 +6,8 @@ from .serializers import JournalSerializer, VolumeSerializer, IssueSerializer, P
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -94,7 +96,7 @@ class PaperSearchView(generics.ListAPIView):
     queryset = Paper.objects.all()
     serializer_class = PaperSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'keywords', 'author', 'journal__name']  # Fields to search on
+    search_fields = ['title', 'keywords', 'author', 'journal__name', 'author__email']  # Fields to search on
     ordering_fields = ['title', 'created_at']
     pagination_class = StandardResultsSetPagination
 
@@ -137,14 +139,43 @@ class TopicViewSet(viewsets.ModelViewSet):
         instance.save(update_fields=['viewed_by'])
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
+class TopicSearchView(generics.ListAPIView):
+    serializer_class = TopicSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        # This line fetches all Topic objects and tells Django to prefetch the related participating_journals and editors for each topic efficiently.
+        queryset = Topic.objects.all().prefetch_related('participating_journals', 'editors')
+        
+        title = self.request.query_params.get('title', None)
+        journal_id = self.request.query_params.get('journal', None)
+        status = self.request.query_params.get('status', None)
+        subject_id = self.request.query_params.get('subject', None)
+
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+
+        if journal_id:
+            queryset = queryset.filter(participating_journals__id=journal_id)
+
+        if subject_id:
+            queryset = queryset.filter(participating_journals__subject__id=subject_id)
+
+        if status:
+            if status.lower() == 'closed':
+                queryset = queryset.filter(deadline__lt=timezone.now())
+            elif status.lower() == 'open':
+                queryset = queryset.filter(deadline__gte=timezone.now())
+
+        return queryset.distinct()
+
 
 class HighlyAccessedPapersView(views.APIView):
     def get(self, request):
         papers = Paper.objects.all().order_by('-view_count')[:10]
         serializer = PaperSerializer(papers, many=True)
         return Response(serializer.data)
-
-
     
 class RegisterView(views.APIView):
     def post(self, request, *args, **kwargs):

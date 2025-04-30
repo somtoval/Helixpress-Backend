@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-$n4+)2jn)6#n=6n0nigk&$*exwiwsn6!qgo+#(nk741n&n4@sg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "rest_framework_simplejwt",
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,11 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    # Add other headers if needed
+]

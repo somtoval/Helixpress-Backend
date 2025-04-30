@@ -27,6 +27,7 @@ urlpatterns = [
     
     # Custom search paths
     path('papers/search/', views.PaperSearchView.as_view(), name='paper-search'),
+    path('topics/search/', views.TopicSearchView.as_view(), name='topic-search'),
     
     # Other explicit paths
     path('subjects/<uuid:subject_id>/journals/', views.JournalsInSubjectView.as_view(), name='journals-in-subject'),

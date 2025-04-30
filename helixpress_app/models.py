@@ -70,6 +70,8 @@ class Issue(models.Model):
     number = models.IntegerField(null=True)
     volume = models.ForeignKey(Volume, null=True, on_delete=models.CASCADE)
     journal = models.ForeignKey(Journal, null=True, on_delete=models.CASCADE)
+    title =models.CharField(max_length=200, null=True)
+    body = models.TextField(null=True)
     special = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -148,6 +150,7 @@ class News(models.Model):
 class Blog(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False, primary_key=True)
     title = models.CharField(max_length=200, null=True)
+    pic = models.ImageField(upload_to='blogs_pics/', null=True, blank=False)
     body = models.TextField(null=True)
     author = models.ForeignKey(UserProfile, null=True, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
