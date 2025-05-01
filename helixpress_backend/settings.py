@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+# import cloudinary_storage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    # 'cloudinary',
+    # 'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +163,13 @@ CORS_ALLOW_HEADERS = [
     'authorization',
     # Add other headers if needed
 ]
+
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': 'df1uypfqv',
+#     'API_KEY': '292452763474338',
+#     'API_SECRET': 'VGGmVdjvFe8gEFKl4KFQUfZuM4k',
+# }
+
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# MEDIA_URL = 'https://res.cloudinary.com/df1uypfqv/media/'
